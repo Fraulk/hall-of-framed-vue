@@ -1,26 +1,20 @@
 <template>
   <div id="app">
-    <v-container>
-      <v-lazy
+    <div>
+      <!-- <v-lazy
         v-for="(chunk, i) in chunkShots"
         :key="i"
         :options="{
           threshold: 0.5,
         }"
-        min-height="100vh"
         transition="fade-transition"
-      >
-        <!-- From ~550 Mb to ~7 775 Mb or RAM usage when you scroll all the way down -->
-        <div class="jg">
-          <div id="jaja" v-for="(shot, i) in chunk" :key="i">
-            <img
-              :src="shot[1].shotUrl"
-              :alt="shot[1].gameName"
-              style="max-height: 350px"
-            />
-          </div>
-        </div>
-      </v-lazy>
+      > -->
+      <ul>
+        <li v-for="(shot, i) in shots._default" :key="i">
+          <img :src="shot.thumbnailUrl" loading="lazy" />
+        </li>
+      </ul>
+      <!-- </v-lazy> -->
       <!-- <v-img
         v-for="(shot, i) in shots._default"
         :key="i"
@@ -36,7 +30,7 @@
           </v-row>
         </template>
       </v-img> -->
-    </v-container>
+    </div>
   </div>
 </template>
 
@@ -65,58 +59,53 @@ export default {
 </script>
 
 <style scoped>
-#app {
-  background-color: #212121;
-}
-.jg {
+ul {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
-.jg > div,
-.jg::after {
-  --ratio: calc(var(--w) / var(--h));
-  --row-height: 15rem;
-  flex-basis: calc(var(--ratio) * var(--row-height));
+li {
+  height: 207px;
+  flex-grow: 1;
+  list-style: none;
 }
 
-.jg > div {
-  margin: 0.25rem;
-  flex-grow: calc(var(--ratio) * 100);
+li:last-child {
+  flex-grow: 1;
 }
 
-.jg::after {
-  --w: 2;
-  --h: 1;
-  content: "";
-  flex-grow: 1000000;
-}
-
-.jg > div > img {
-  display: block;
-  position: relative;
-  width: 100%;
-  opacity: 0;
+img {
+  max-height: 100%;
+  min-width: 100%;
   object-fit: cover;
-  animation: fadeIn 1000ms forwards;
+  vertical-align: bottom;
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
+@media (max-aspect-ratio: 1/1) {
+  li {
+    height: 30vh;
   }
 }
 
-@-webkit-keyframes fadeIn {
-  0% {
-    opacity: 0;
+@media (max-height: 480px) {
+  li {
+    height: 80vh;
   }
-  100% {
-    opacity: 1;
+}
+
+@media (max-aspect-ratio: 1/1) and (max-width: 480px) {
+  ul {
+    flex-direction: row;
+  }
+
+  li {
+    height: auto;
+    width: 100%;
+  }
+  img {
+    width: 100%;
+    max-height: 75vh;
+    min-width: 0;
   }
 }
 </style>
