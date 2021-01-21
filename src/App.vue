@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <v-container>
-      <v-lazy
+    <div>
+      <!-- <v-lazy
         v-for="(chunk, i) in chunkShots"
         :key="i"
         :options="{
@@ -9,18 +9,18 @@
         }"
         min-height="100vh"
         transition="fade-transition"
-      >
-        <!-- From ~550 Mb to ~7 775 Mb or RAM usage when you scroll all the way down -->
-        <div class="jg">
-          <div id="jaja" v-for="(shot, i) in chunk" :key="i">
-            <img
-              :src="shot[1].shotUrl"
-              :alt="shot[1].gameName"
-              style="max-height: 350px"
-            />
-          </div>
-        </div>
-      </v-lazy>
+      > -->
+      <div class="jg">
+        <a
+          id="imgCtn"
+          v-for="(shot, i) in shots._default"
+          :key="i"
+          :style="`--w: ${shot.width / 4.8}; --h: ${shot.height / 4.8};`"
+        >
+          <img :src="shot.thumbnailUrl" :alt="shot.gameName" height="300" />
+        </a>
+      </div>
+      <!-- </v-lazy> -->
       <!-- <v-img
         v-for="(shot, i) in shots._default"
         :key="i"
@@ -36,7 +36,7 @@
           </v-row>
         </template>
       </v-img> -->
-    </v-container>
+    </div>
   </div>
 </template>
 
@@ -55,7 +55,7 @@ export default {
       .then((response) => {
         this.shots = response.data;
         Object.entries(this.shots._default).forEach((x, y, z) =>
-          !(y % 10) ? this.chunkShots.push(z.slice(y, y + 10)) : ""
+          !(y % 50) ? this.chunkShots.push(z.slice(y, y + 50)) : ""
         );
         console.log(this.shots);
         console.log(this.chunkShots);
@@ -74,14 +74,14 @@ export default {
   justify-content: center;
 }
 
-.jg > div,
+.jg > a,
 .jg::after {
   --ratio: calc(var(--w) / var(--h));
   --row-height: 15rem;
   flex-basis: calc(var(--ratio) * var(--row-height));
 }
 
-.jg > div {
+.jg > a {
   margin: 0.25rem;
   flex-grow: calc(var(--ratio) * 100);
 }
@@ -93,7 +93,7 @@ export default {
   flex-grow: 1000000;
 }
 
-.jg > div > img {
+.jg > a > img {
   display: block;
   position: relative;
   width: 100%;
