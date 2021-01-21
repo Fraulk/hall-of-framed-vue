@@ -59,15 +59,20 @@ export default {
 </script>
 
 <style scoped>
+#app {
+  background-color: #212121;
+}
+
 ul {
   display: flex;
   flex-wrap: wrap;
 }
 
 li {
-  height: 207px;
+  height: 300px;
   flex-grow: 1;
   list-style: none;
+  margin: 2px;
 }
 
 li:last-child {
