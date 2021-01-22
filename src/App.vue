@@ -1,51 +1,56 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <div>
-      <!-- <v-lazy
-        v-for="(chunk, i) in chunkShots"
-        :key="i"
-        :options="{
-          threshold: 0.5,
-        }"
-        min-height="100vh"
-        transition="fade-transition"
-      > -->
       <div class="jg">
         <a
           id="imgCtn"
           v-for="(shot, i) in shots._default"
           :key="i"
-          :style="`--w: ${shot.width / 4.8}; --h: ${shot.height / 4.8};`"
+          :style="`--w: ${shot.width / 4.8}; --h: ${
+            shot.height / 4.8
+          }; position: relative`"
+          @click="
+            isShown = true;
+            selectedShot = shot;
+          "
         >
-          <img :src="shot.thumbnailUrl" :alt="shot.gameName" height="300" />
+          <img
+            :src="shot.thumbnailUrl"
+            :alt="shot.gameName"
+            height="300"
+            ondragstart="return false"
+          />
+          <div class="onImgHover" :style="`height: 4rem;`">
+            <span
+              v-text="shot.gameName.replace(/(?<=<)(.*?)(?=\s*>)/gi, '')"
+            ></span>
+          </div>
         </a>
       </div>
-      <!-- </v-lazy> -->
-      <!-- <v-img
-        v-for="(shot, i) in shots._default"
-        :key="i"
-        :src="shot.shotUrl"
-        max-width="500"
-      >
-        <template v-slot:placeholder>
-          <v-row align="center" justify="center">
-            <v-progress-circular
-              indeterminate
-              color="black"
-            ></v-progress-circular>
-          </v-row>
-        </template>
-      </v-img> -->
     </div>
-  </div>
+    <ShowShot
+      v-show="isShown && selectedShot != undefined"
+      :author="selectedShot.author"
+      :authorsAvatarUrl="selectedShot.authorsAvatarUrl"
+      :date="selectedShot.date"
+      :gameName="selectedShot.gameName"
+      :score="selectedShot.score"
+      :shotUrl="selectedShot.shotUrl"
+      v-on:close="isShown = false"
+    ></ShowShot>
+  </v-app>
 </template>
 
 <script>
+import ShowShot from "@/components/ShowShot";
+
 export default {
   name: "App",
   data: () => ({
     shots: "",
     chunkShots: [],
+    isShown: false,
+    selectedShot: "",
   }),
   mounted() {
     this.$axios
@@ -54,20 +59,21 @@ export default {
       )
       .then((response) => {
         this.shots = response.data;
-        Object.entries(this.shots._default).forEach((x, y, z) =>
-          !(y % 50) ? this.chunkShots.push(z.slice(y, y + 50)) : ""
-        );
+        // not needed thanks to thumbnail
+        // Object.entries(this.shots._default).forEach((x, y, z) =>
+        //   !(y % 50) ? this.chunkShots.push(z.slice(y, y + 50)) : ""
+        // );
         console.log(this.shots);
         console.log(this.chunkShots);
       });
+  },
+  components: {
+    ShowShot,
   },
 };
 </script>
 
 <style scoped>
-#app {
-  background-color: #212121;
-}
 .jg {
   display: flex;
   flex-wrap: wrap;
@@ -100,6 +106,44 @@ export default {
   opacity: 0;
   object-fit: cover;
   animation: fadeIn 1000ms forwards;
+}
+
+a {
+  text-decoration: none;
+  color: #fff !important;
+}
+
+.onImgHover {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: -moz-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background: -webkit-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+  opacity: 0;
+  z-index: 1;
+  transform: translateY(-4rem);
+  transition: 200ms;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+img:hover ~ .onImgHover,
+.onImgHover:hover {
+  opacity: 1;
 }
 
 @keyframes fadeIn {
