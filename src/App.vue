@@ -4,31 +4,27 @@
       <div class="jg">
         <a
           id="imgCtn"
-          v-for="(shot, i) in shots._default"
+          v-for="(shot, i) in shots"
           :key="i"
           :style="`--w: ${shot.width / 4.8}; --h: ${
             shot.height / 4.8
           }; position: relative`"
-          @click="
-            isShown = true;
-            selectedShot = shot;
-          "
+          :href="`discord://${shot.messageUrl}`"
+          ondragstart="return false"
         >
           <img
-            :src="shot.thumbnailUrl"
-            :alt="shot.gameName"
+            :src="shot.imageUrl"
+            :alt="shot.name"
             height="300"
             ondragstart="return false"
           />
           <div class="onImgHover" :style="`height: 4rem;`">
-            <span
-              v-text="shot.gameName.replace(/(?<=<)(.*?)(?=\s*>)/gi, '')"
-            ></span>
+            <span>{{ shot.name }}</span>
           </div>
         </a>
       </div>
     </div>
-    <ShowShot
+    <!-- <ShowShot
       v-show="isShown && selectedShot != undefined"
       :author="selectedShot.author"
       :authorsAvatarUrl="selectedShot.authorsAvatarUrl"
@@ -37,38 +33,37 @@
       :score="selectedShot.score"
       :shotUrl="selectedShot.shotUrl"
       v-on:close="isShown = false"
-    ></ShowShot>
+    ></ShowShot> -->
   </v-app>
 </template>
 
 <script>
-import ShowShot from "@/components/ShowShot";
+import { getDatabase, ref, child, get } from "firebase/database";
+// import ShowShot from "@/components/ShowShot";
 
 export default {
   name: "App",
   data: () => ({
+    userId: "",
     shots: "",
-    chunkShots: [],
-    isShown: false,
-    selectedShot: "",
   }),
   mounted() {
-    this.$axios
-      .get(
-        "https://raw.githubusercontent.com/originalnicodrgitbot/test-git-python/main/shotsdb.json"
-      )
-      .then((response) => {
-        this.shots = response.data;
-        // not needed thanks to thumbnail
-        // Object.entries(this.shots._default).forEach((x, y, z) =>
-        //   !(y % 50) ? this.chunkShots.push(z.slice(y, y + 50)) : ""
-        // );
-        console.log(this.shots);
-        console.log(this.chunkShots);
+    this.userId = this.$route.query.id;
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, `${this.userId}`))
+      .then((shots) => {
+        if (shots.exists()) {
+          this.shots = shots.val();
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
       });
   },
   components: {
-    ShowShot,
+    // ShowShot,
   },
 };
 </script>
