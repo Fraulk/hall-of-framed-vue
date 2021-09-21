@@ -1,16 +1,16 @@
 #!/bin/bash
 
-if [[ -f src/config/firebase.js ]] ; then rm src/config/firebase.js ; fi
+if [[ -f firebase.js ]] ; then rm firebase.js ; fi
 
 ## then build the file one line at a time:
 
-echo "const firebaseConfig = {" >> src/config/firebase.js
-echo "  apiKey: \"${apiKey}\"," >> src/config/firebase.js
-echo "  authDomain: \"${authDomain}\"," >> src/config/firebase.js
-echo "  databaseURL: \"${databaseURL}\"," >> src/config/firebase.js
-echo "  projectId: \"${projectId}\"," >> src/config/firebase.js
-echo "  storageBucket: \"${storageBucket}\"," >> src/config/firebase.js
-echo "  messagingSenderId: \"${messagingSenderId}\"," >> src/config/firebase.js
-echo "  appId: \"${appId}\"," >> src/config/firebase.js
-echo "};" >> src/config/firebase.js
-echo "export default firebaseConfig" >> src/config/firebase.js
+echo "const firebaseConfig = {" >> firebase.js
+echo "  apiKey: \"${apiKey}\"," >> firebase.js
+echo "  authDomain: \"${authDomain}\"," >> firebase.js
+echo "  databaseURL: \"${databaseURL}\"," >> firebase.js
+echo "  projectId: \"${projectId}\"," >> firebase.js
+echo "  storageBucket: \"${storageBucket}\"," >> firebase.js
+echo "  messagingSenderId: \"${messagingSenderId}\"," >> firebase.js
+echo "  appId: \"${appId}\"," >> firebase.js
+echo "};" >> firebase.js
+echo "export default firebaseConfig" >> firebase.js

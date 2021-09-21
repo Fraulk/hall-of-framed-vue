@@ -1,4 +1,4 @@
-import firebaseConfig from "../config/firebase";
+import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app"
 import "firebase/compat/database"
 import Vue from "vue";
