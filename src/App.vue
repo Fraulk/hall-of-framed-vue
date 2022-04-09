@@ -9,7 +9,7 @@
           :style="`--w: ${shot.width / 4.8}; --h: ${
             shot.height / 4.8
           }; position: relative`"
-          :href="`${link ? 'discord://' : ''}${shot.messageUrl}`"
+          :href="`${!link ? 'discord://' : ''}${shot.messageUrl}`"
           ondragstart="return false"
         >
           <img
