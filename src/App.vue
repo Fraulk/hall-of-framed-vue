@@ -9,7 +9,7 @@
           :style="`--w: ${shot.width / 4.8}; --h: ${
             shot.height / 4.8
           }; position: relative`"
-          :href="`discord://${shot.messageUrl}`"
+          :href="`${link ? 'discord://' : ''}${shot.messageUrl}`"
           ondragstart="return false"
         >
           <img
@@ -22,6 +22,14 @@
             <span>{{ shot.name }}</span>
           </div>
         </a>
+      </div>
+      <div class="selectLink">
+        <span @click="link = true" :class="link ? 'selectedLink' : ''">
+          HTTP link
+        </span>
+        <span @click="link = false" :class="!link ? 'selectedLink' : ''">
+          App link
+        </span>
       </div>
     </div>
     <!-- <ShowShot
@@ -46,6 +54,7 @@ export default {
   data: () => ({
     userId: "",
     shots: "",
+    link: false,
   }),
   mounted() {
     this.userId = this.$route.query.id;
@@ -69,6 +78,23 @@ export default {
 </script>
 
 <style scoped>
+.selectLink {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: .5rem;
+  background-color: black;
+  display: flex;
+  gap: 1rem;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.selectedLink {
+  background-color: rgb(156, 1, 53);
+  padding: 0 .25rem;
+}
+
 .jg {
   display: flex;
   flex-wrap: wrap;
