@@ -23,6 +23,9 @@
           </div>
         </a>
       </div>
+      <div class="more-shots" v-if="shotCount > 100 && allShots.length > 0" @click="loadMore">
+        Load more
+      </div>
       <div class="selectLink">
         <span @click="link = true" :class="link ? 'selectedLink' : ''">
           HTTP link
@@ -53,16 +56,29 @@ export default {
   name: "App",
   data: () => ({
     userId: "",
-    shots: "",
+    shots: [],
+    allShots: [],
+    shotCount: 0,
     link: false,
   }),
+
   mounted() {
     this.userId = this.$route.query.id;
     const dbRef = ref(getDatabase());
     get(child(dbRef, `${this.userId}`))
       .then((shots) => {
         if (shots.exists()) {
-          this.shots = shots.val();
+          let respShots = shots.val();
+          respShots = Object.values(respShots)
+          this.shotCount = respShots.length
+          console.log(respShots)
+          respShots.reverse();
+          if (respShots.length > 100) {
+            this.shots = respShots.splice(0, 100)
+            this.allShots = respShots
+          }
+          else
+            this.shots = respShots
         } else {
           console.log("No data available");
         }
@@ -71,6 +87,16 @@ export default {
         console.error(error);
       });
   },
+
+  methods: {
+    loadMore() {
+      console.log(this.shots)
+      console.log(this.allShots)
+      this.shots = this.shots.concat(this.allShots.splice(0, 100))
+      console.log(this.shots)
+    }
+  },
+
   components: {
     // ShowShot,
   },
@@ -78,11 +104,21 @@ export default {
 </script>
 
 <style scoped>
+.more-shots {
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25rem;
+  background-color: #9c0135;
+  cursor: pointer;
+}
+
 .selectLink {
   position: fixed;
   bottom: 0;
   right: 0;
-  padding: .5rem;
+  padding: 0.5rem;
   background-color: black;
   display: flex;
   gap: 1rem;
@@ -91,8 +127,8 @@ export default {
 }
 
 .selectedLink {
-  background-color: rgb(156, 1, 53);
-  padding: 0 .25rem;
+  background-color: #9c0135;
+  padding: 0 0.25rem;
 }
 
 .jg {
